@@ -1,0 +1,102 @@
+version: "3"
+
+services:
+  ### MySql database USER
+  db-registerauth:
+    container_name: db-user
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ms_user
+      MYSQL_USER: nroch
+      MYSQL_PASSWORD: Test123
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3309:3306"
+    expose:
+      - 3309
+
+  ### MySql database INVENTORY
+  db-inventory:
+    container_name: db-inventory
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ms_inventory
+      MYSQL_USER: nroch
+      MYSQL_PASSWORD: Test123
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    expose:
+      - 3308
+
+  ### MySql database PRODUCT
+  db-product:
+    container_name: db-product
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ms_product
+      MYSQL_USER: nroch
+      MYSQL_PASSWORD: Test123
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    expose:
+      - 3307
+
+  ### MySql database ORDER
+  db-order:
+    container_name: db-order
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ms_order
+      MYSQL_USER: nroch
+      MYSQL_PASSWORD: Test123
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3310:3306"
+    expose:
+      - 3310
+
+  ### MySql database NOTIFICATION
+  db-notification:
+    container_name: db-notification
+    image: mysql:8.0.33
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ms_notification
+      MYSQL_USER: nroch
+      MYSQL_PASSWORD: Test123
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3311:3306"
+    expose:
+      - 3311
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TRICK_TIME: 2000
+    ports:
+      - "22181:2181"
+
+  broker:
+    image: confluentinc/cp-kafka:latest
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
